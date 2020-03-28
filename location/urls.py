@@ -6,5 +6,7 @@ router = routers.DefaultRouter()
 router.register(r'location', LocationViewSet)
 
 urlpatterns = [
+    path("location/plus_code/<plus_code>/",
+         LocationViewSet.as_view({'get': 'plus_code'})),
     path("", include(router.urls)),
 ]
