@@ -1,7 +1,8 @@
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework import generics, status, viewsets, permissions
 from rest_framework.decorators import action
-from .serializers import PhoneVerificationSerializer, SMSTokenObtainPairSerializer, RecordSerialier, SendMessageSerializer
+from .serializers import (PhoneVerificationSerializer, SMSTokenObtainPairSerializer,
+                          RecordSerialier, SendMessageSerializer, RecordDetailSerialier)
 from authy.api import AuthyApiClient
 from django.conf import settings
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from .models import Record
 from .permissions import RecordOwnerOnly
 from twilio.rest import Client
 from django.conf import settings
+from location.models import Location
 
 # Your Account SID from twilio.com/console
 account_sid = settings.TWILIO_SID
@@ -50,6 +52,11 @@ class RecordViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecordSerialier
 
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RecordSerialier
+        return RecordDetailSerialier
+
     def get_queryset(self):
         user_pk = self.request.user.pk if self.request.user.is_authenticated else None
         if self.action == 'list':
@@ -64,7 +71,13 @@ class RecordViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
+
+        community_cases = None
+        location = serializer.validated_data["location"]
+        if location.community is not None:
+            community_cases = location.community.cases
+
+        serializer.save(user=request.user, community_cases=community_cases)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

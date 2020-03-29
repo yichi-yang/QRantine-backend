@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from authy.api import AuthyApiClient
 from django.conf import settings
 from .models import User, Record
+from location.serializers import LocationSerializer
 
 authy_api = AuthyApiClient(settings.ACCOUNT_SECURITY_API_KEY)
 
@@ -82,8 +83,18 @@ class SMSTokenObtainPairSerializer(serializers.Serializer):
 class RecordSerialier(serializers.ModelSerializer):
     class Meta:
         model = Record
-        fields = ("id", "user", "location", "visited_at")
-        read_only_fields = ("id", "user", "visited_at")
+        fields = ("id", "user", "location", "visited_at", "community_cases")
+        read_only_fields = ("id", "user", "visited_at", "community_cases")
+
+
+class RecordDetailSerialier(serializers.ModelSerializer):
+
+    location = LocationSerializer(read_only=True)
+
+    class Meta:
+        model = Record
+        fields = ("id", "user", "location", "visited_at", "community_cases")
+        read_only_fields = ("id", "user", "visited_at", "community_cases")
 
 
 class SendMessageSerializer(serializers.Serializer):
