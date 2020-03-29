@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from authy.api import AuthyApiClient
 from django.conf import settings
 from .models import User, Record
-from location.serializers import LocationSerializer
+from location.serializers import LocationDetailSerializer
 
 authy_api = AuthyApiClient(settings.ACCOUNT_SECURITY_API_KEY)
 
@@ -89,7 +89,7 @@ class RecordSerialier(serializers.ModelSerializer):
 
 class RecordDetailSerialier(serializers.ModelSerializer):
 
-    location = LocationSerializer(read_only=True)
+    location = LocationDetailSerializer(read_only=True)
 
     class Meta:
         model = Record

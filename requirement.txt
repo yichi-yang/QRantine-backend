@@ -1,6 +1,7 @@
 asgiref==3.2.7
 authy==2.2.5
 autopep8==1.5
+beautifulsoup4==4.8.2
 certifi==2019.11.28
 chardet==3.0.4
 Django==3.0.4
@@ -15,5 +16,7 @@ pytz==2019.3
 requests==2.23.0
 simplejson==3.17.0
 six==1.14.0
+soupsieve==2.0
 sqlparse==0.3.1
+twilio==6.37.0
 urllib3==1.25.8

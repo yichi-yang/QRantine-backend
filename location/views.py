@@ -3,13 +3,18 @@ from rest_framework.generics import GenericAPIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from .models import Location
-from .serializers import LocationSerializer
+from .serializers import LocationSerializer, LocationDetailSerializer
 from rest_framework.decorators import action
 
 
 class LocationViewSet(ModelViewSet):
     serializer_class = LocationSerializer
     queryset = Location.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return LocationDetailSerializer
+        return super().get_serializer_class()
 
     @action(detail=True)
     def plus_code(self, request, plus_code=None):
