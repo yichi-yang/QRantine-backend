@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from .models import Community
+from .serializers import CommunitySerializer
 
-# Create your views here.
+
+class CommunityViewSet(ModelViewSet):
+    serializer_class = CommunitySerializer
+    queryset = Community.objects.all()
